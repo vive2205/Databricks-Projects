@@ -1,0 +1,22 @@
+name: Databricks CI/CD
+
+on:
+  push:
+    branches:
+      - main  # Runs the workflow when changes are pushed to main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Databricks CLI
+        run: |
+          pip install databricks-cli
+          databricks configure --host ${{ secrets.DATABRICKS_HOST }} --token ${{ secrets.DATABRICKS_TOKEN }}
+
+      - name: Deploy Notebooks to Databricks Repo
+        run: |
+          databricks repos update --path /Repos/Databricks-Projects --branch main
